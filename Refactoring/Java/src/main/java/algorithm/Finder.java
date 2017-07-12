@@ -1,53 +1,36 @@
 package algorithm;
-import java.util.ArrayList;
+
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class Finder {
-	private final List<Thing> _p;
+    private final List<Person> personList;
 
-	public Finder(List<Thing> p) {
-		_p = p;
-	}
+    public Finder(List<Person> p) {
+        personList = p;
+    }
 
-	public F Find(FT ft) {
-		List<F> tr = new ArrayList<F>();
+    public PersonsDOBDiff find(FinderType finderType) {
 
-		for (int i = 0; i < _p.size() - 1; i++) {
-			for (int j = i + 1; j < _p.size(); j++) {
-				F r = new F();
-				if (_p.get(i).birthDate.getTime() < _p.get(j).birthDate.getTime()) {
-					r.P1 = _p.get(i);
-					r.P2 = _p.get(j);
-				} else {
-					r.P1 = _p.get(j);
-					r.P2 = _p.get(i);
-				}
-				r.D = r.P2.birthDate.getTime() - r.P1.birthDate.getTime();
-				tr.add(r);
-			}
-		}
+        PersonsDOBDiff personsDOBDiff = new PersonsDOBDiff();
 
-		if (tr.size() < 1) {
-			return new F();
-		}
+        if (personList.size() <= 1) {
+            return personsDOBDiff;
+        }
 
-		F answer = tr.get(0);
-		for (F result : tr) {
-			switch (ft) {
-				case One :
-					if (result.D < answer.D) {
-						answer = result;
-					}
-					break;
+        Collections.sort(personList, Comparator.comparing(Person::getBirthDate));
 
-				case Two :
-					if (result.D > answer.D) {
-						answer = result;
-					}
-					break;
-			}
-		}
+        int end = 1;
 
-		return answer;
-	}
+        if (finderType.equals(FinderType.TWO)) {
+            end = personList.size() - 1;
+        }
+
+        personsDOBDiff.setPersonsDiff(personList, 0, end);
+
+        return personsDOBDiff;
+
+    }
+
 }
